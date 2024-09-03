@@ -1,22 +1,33 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap';
 
 const EditModal = ({ show, handleClose, todo, onSave }) => {
 
     const [title, setTitle] = useState('');
     const [completed, setCompleted] = useState(false);
+    const [hidden, setHidden] = useState(true)
+    const [error, setError] = useState(null)
+
+    const inptVal = useRef()
 
     useEffect(() => {
         if (todo) {
             setTitle(todo.title);
             setCompleted(todo.completed)
+            setHidden(todo.title.length > 0)
         }
     }, [todo]);
 
     const handleSave = () => {
+      if (inptVal.current.value !== '') {
         const updatedTodo = { ...todo, title, completed };
         onSave(updatedTodo);
         handleClose();
+      }
+      else{
+        setHidden(false)
+        setError('the title must contain data')
+      }
     };
 
     return (
@@ -40,12 +51,17 @@ const EditModal = ({ show, handleClose, todo, onSave }) => {
             <Form.Control
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              ref={inptVal}
+              onChange={(e) => {
+                setTitle(e.target.value)
+                setHidden(e.target.value.length > 0)
+              }}
               placeholder="Enter title"
             />
           </Form.Group>
 
         </Form>
+        <p style={{color: 'red'}} hidden={hidden}>{error}</p>
       </Modal.Body>
 
       <Modal.Footer>

@@ -1,8 +1,10 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 
 const TodoForm = ({onAdd, items}) => {
 
+    //const [hidden, setHidden] = useState(true)
+    const [error, setError] = useState('')
     const inptVal = useRef()
 
     const AddItem = () => {
@@ -10,6 +12,12 @@ const TodoForm = ({onAdd, items}) => {
             items.push({userId:1, id: Math.random(), title: inptVal.current.value, completed: false})
             inptVal.current.value = ''
             onAdd();
+        }
+        else{
+            //setHidden(false)
+            setError('title must contain value')
+            //console.log(error)
+            alert(error)
         }
     }
 
@@ -22,7 +30,6 @@ const TodoForm = ({onAdd, items}) => {
             <Button onClick={AddItem} className='btn-success'>Add</Button>
         </Col>
     </Row>
-
   )
 }
 
